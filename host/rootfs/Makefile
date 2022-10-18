@@ -4,7 +4,7 @@
 # qemu-kvm is non-standard, but is present in at least Fedora and
 # Nixpkgs.  If you don't have qemu-kvm, you'll need to set e.g.
 # QEMU_KVM = qemu-system-x86_64 -enable-kvm.
-QEMU_KVM = qemu-kvm
+QEMU_KVM = qemu-system-x86_64 -enable-kvm
 
 SCRIPTS = ../../scripts
 VERITYSETUP = veritysetup
@@ -142,22 +142,24 @@ build/rootfs.verity.superblock: build/rootfs.verity
 	tail -n +2 build/rootfs.verity > $@
 
 build/live.img: $(SCRIPTS)/format-uuid.sh $(SCRIPTS)/make-gpt.sh build/rootfs.verity.superblock build/rootfs.verity.roothash build/rootfs.ext4
-	$(SCRIPTS)/make-gpt.sh $@.tmp \
-	    build/rootfs.verity.superblock:2c7357ed-ebd2-46d9-aec1-23d437ec2bf5:$$($(SCRIPTS)/format-uuid.sh "$$(dd if=build/rootfs.verity.roothash bs=32 skip=1 count=1 status=none)") \
-	    build/rootfs.ext4:4f68bce3-e8cd-4db1-96e7-fbcaf984b709:$$($(SCRIPTS)/format-uuid.sh "$$(head -c 32 build/rootfs.verity.roothash)")
+	bash $(SCRIPTS)/make-gpt.sh $@.tmp \
+	    build/rootfs.verity.superblock:2c7357ed-ebd2-46d9-aec1-23d437ec2bf5:$$(bash $(SCRIPTS)/format-uuid.sh "$$(dd if=build/rootfs.verity.roothash bs=32 skip=1 count=1 status=none)") \
+	    build/rootfs.ext4:4f68bce3-e8cd-4db1-96e7-fbcaf984b709:$$(bash $(SCRIPTS)/format-uuid.sh "$$(head -c 32 build/rootfs.verity.roothash)")
 	mv $@.tmp $@
 
 run: build/live.img $(EXT_FS) build/rootfs.verity.roothash
-	$(QEMU_KVM) -cpu host -m 2G \
-	    -machine q35,kernel=$(KERNEL),kernel-irqchip=split,initrd=$(INITRAMFS) \
-	    -display gtk,gl=on \
-	    -qmp unix:vmm.sock,server,nowait \
-	    -monitor vc \
-	    -parallel none \
-	    -drive file=build/live.img,if=virtio,format=raw,readonly=off \
-	    -drive file=$(EXT_FS),if=virtio,format=raw,readonly=on \
-	    -append "console=ttyS0 roothash=$$(< build/rootfs.verity.roothash) ext=/dev/vdb intel_iommu=on" \
-	    -device intel-iommu,intremap=on \
-	    -device virtio-vga-gl \
-	    -device vhost-vsock-pci,guest-cid=3
+	sudo $(QEMU_KVM) -cpu host -m 2G \
+	   -enable-kvm \
+	   -cpu host \
+	   -machine q35 \
+	   -m 2G \
+	   -serial stdio \
+	   -monitor vc \
+	   -parallel none \
+	   -vga virtio -display gtk,gl=on \
+	   -kernel $(KERNEL) \
+	   -initrd $(INITRAMFS) \
+	   -drive file=build/live.img,if=virtio,format=raw,readonly=off \
+	   -drive file=$(EXT_FS),if=virtio,format=raw,readonly=off \
+	   -append "console=ttyS0 roothash=$$(< build/rootfs.verity.roothash) ext=/dev/vdb"
 .PHONY: run
