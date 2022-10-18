@@ -19,6 +19,8 @@ build/rootfs.ext4: build/rootfs.tar
 	mv $@.tmp $@
 
 FILES = \
+	etc/dbus-1/system.conf \
+	etc/dbus-1/session.conf \
 	etc/fonts/fonts.conf \
 	etc/fstab \
 	etc/group \
@@ -43,6 +45,7 @@ FILES = \
 	etc/s6-linux-init/scripts/rc.init \
 	etc/xdg/weston/autolaunch \
 	etc/xdg/weston/weston.ini \
+	usr/bin/setup.sh \
 	usr/bin/lsvm \
 	usr/bin/vm-console \
 	usr/bin/vm-start \
@@ -51,7 +54,7 @@ DIRS = dev etc/s6-linux-init/env ext run proc sys
 
 # These are separate because they need to be included, but putting
 # them as make dependencies would confuse make.
-LINKS = bin sbin
+LINKS = bin sbin var/run
 
 BUILD_FILES = build/etc/mdev/modalias.sh build/etc/s6-rc
 
@@ -84,6 +87,9 @@ S6_RC_FILES = \
 	etc/s6-rc/card0/up \
 	etc/s6-rc/core/type \
 	etc/s6-rc/core/up \
+	etc/s6-rc/dbus/notification-fd \
+	etc/s6-rc/dbus/run \
+	etc/s6-rc/dbus/type \
 	etc/s6-rc/ext-rc-init/dependencies \
 	etc/s6-rc/ext-rc-init/type \
 	etc/s6-rc/ext-rc-init/up \
@@ -148,12 +154,11 @@ build/live.img: $(SCRIPTS)/format-uuid.sh $(SCRIPTS)/make-gpt.sh build/rootfs.ve
 	mv $@.tmp $@
 
 run: build/live.img $(EXT_FS) build/rootfs.verity.roothash
-	sudo $(QEMU_KVM) -cpu host -m 2G \
+	$(QEMU_KVM) -cpu host -m 2G \
 	   -enable-kvm \
 	   -cpu host \
 	   -machine q35 \
 	   -m 2G \
-	   -serial stdio \
 	   -monitor vc \
 	   -parallel none \
 	   -vga virtio -display gtk,gl=on \
