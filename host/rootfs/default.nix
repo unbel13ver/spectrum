@@ -7,7 +7,7 @@ pkgs.callPackage (
 
 { lib, stdenvNoCC, nixos, runCommand, writeReferencesToFile, s6-rc, tar2ext4, e2fsprogs
 , busybox, cloud-hypervisor, cryptsetup, execline, jq, kmod, dbus, xdg-utils
-, mdevd, s6, s6-linux-init, socat, util-linuxMinimal, xorg, strace
+, mdevd, s6, s6-linux-init, socat, util-linuxMinimal, xorg, strace, wayland-utils
 }:
 
 let
@@ -45,7 +45,7 @@ let
 
   packages = [
     cloud-hypervisor pkgs.crosvm execline jq kmod mdevd s6 s6-linux-init s6-rc
-    socat start-vm strace dbus xdg-utils
+    socat start-vm strace dbus xdg-utils wayland-utils
 
     (cryptsetup.override {
       programs = {
@@ -82,7 +82,7 @@ let
 
   # Packages that should be fully linked into /usr,
   # (not just their bin/* files).
-  usrPackages = [ appvm pkgsGui.mesa.drivers pkgsGui.dejavu_fonts pkgs.element-desktop-wayland ];
+  usrPackages = [ appvm pkgsGui.mesa.drivers pkgsGui.dejavu_fonts pkgs.element-desktop-wayland pkgs.hello-wayland pkgs.chromium];
 
   packagesSysroot = runCommand "packages-sysroot" {
     nativeBuildInputs = [ xorg.lndir ];
