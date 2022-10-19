@@ -21,4 +21,10 @@ chmod 666 /dev/null
 chown -R ivan:ivan /run/user/0
 chmod -R 0755 /run/user/0
 echo "12345678901264758695847364857456" > /etc/machine-id
+chmod 666 /dev/dri/card0
+chmod 666 /dev/dri/renderD128
 
+
+# /nix/store/2c0446iag7gf6gb96ka3283gx56zyfry-electron-12.2.3/bin/electron --enable-features=UseOzonePlatform --ozone-platform=wayland --use-gl=swiftshader --disable-gpu --disable-software-rasterizer --no-sandbox --no-xshm --no-gpu --disable-accelerated-compositing --disable-gpu-compositing --enable-logging --gpu-startup-dialog
+
+# dbus-launch element-desktop  --enable-features=UseOzonePlatform --ozone-platform=wayland --use-gl=swiftshader --disable-gpu --disable-software-rasterizer --no-sandbox --no-xshm --no-gpu --disable-accelerated-compositing --disable-gpu-compositing --enable-logging
