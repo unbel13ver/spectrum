@@ -6,8 +6,8 @@ export WESTON_CONFIG_FILE=/etc/xdg/weston/weston.ini
 
 export MESA_DEBUG=1
 export EGL_LOG_LEVEL=debug
-export LIBGL_DEBUG=verbose
-export WAYLAND_DEBUG=1
+# export LIBGL_DEBUG=verbose
+# export WAYLAND_DEBUG=1
 
 export ELECTRON_ENABLE_LOGGING=true
 export ELECTRON_DEBUG_NOTIFICATIONS=true
@@ -25,6 +25,6 @@ chmod 666 /dev/dri/card0
 chmod 666 /dev/dri/renderD128
 
 
-# /nix/store/2c0446iag7gf6gb96ka3283gx56zyfry-electron-12.2.3/bin/electron --enable-features=UseOzonePlatform --ozone-platform=wayland --use-gl=swiftshader --disable-gpu --disable-software-rasterizer --no-sandbox --no-xshm --no-gpu --disable-accelerated-compositing --disable-gpu-compositing --enable-logging --gpu-startup-dialog
+# /nix/store//bin/electron --enable-features=UseOzonePlatform --ozone-platform=wayland --no-sandbox --ignore-gpu-blacklist
 
-# dbus-launch element-desktop  --enable-features=UseOzonePlatform --ozone-platform=wayland --use-gl=swiftshader --disable-gpu --disable-software-rasterizer --no-sandbox --no-xshm --no-gpu --disable-accelerated-compositing --disable-gpu-compositing --enable-logging
+# dbus-launch element-desktop  --enable-features=UseOzonePlatform --ozone-platform=wayland --ignore-gpu-blacklist
