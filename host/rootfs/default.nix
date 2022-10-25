@@ -45,7 +45,7 @@ let
 
   packages = [
     cloud-hypervisor pkgs.crosvm execline jq kmod mdevd s6 s6-linux-init s6-rc
-    socat start-vm
+    socat start-vm dbus
 
     (cryptsetup.override {
       programs = {
