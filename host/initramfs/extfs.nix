@@ -14,6 +14,7 @@ let
   appvm-lynx = import ../../vm/app/lynx.nix { inherit config; };
   appvm-usbapp = import ../../vm/app/usbapp.nix { inherit config; };
   appvm-usb = import ../../vm/app/usb { inherit config; };
+  appvm-user = import ../../vm/app/chromium.nix {inherit config;};
 
 in
 
@@ -27,6 +28,8 @@ runCommand "ext.ext4" {
   tar -C ${appvm-catgirl} -c data | tar -C svc -x
   chmod +w svc/data
   tar -C ${appvm-hello-wayland} -c data | tar -C svc -x
+  chmod +w svc/data
+  tar -C ${appvm-user} -c data | tar -C svc -x
   chmod +w svc/data
   tar -C ${appvm-lynx} -c data | tar -C svc -x
   chmod +w svc/data

@@ -31,7 +31,7 @@ fn vm_command(dir: PathBuf) -> Result<Command, String> {
     command.arg("cloud-hypervisor");
     command.args(&["--api-socket", "env/cloud-hypervisor.sock"]);
     command.args(&["--cmdline", "console=hvc0 root=PARTLABEL=root"]);
-    command.args(&["--memory", "size=128M,shared=on"]);
+    command.args(&["--memory", "size=2048M,shared=on"]);
     command.args(&["--console", "pty"]);
     command.args(&["--seccomp", "log"]);
 
